@@ -1,16 +1,3 @@
-float Ramzu = (-95)
-float   Ramzu = 95
-bool Y = ((X+7+B) and ((1+2))) 
-if (X):
-    int T = 5
-else:
-    int T = 't'
-    if (IDF):
-        if(Ramzi):
-            X= 84
-        else:
-for X in range(5,5):
-    for Y in range(6,1):
-        T=8
-        while(X):
-            Xray=7
+float Ramzi = 1
+bool Etat = Ramzi
+

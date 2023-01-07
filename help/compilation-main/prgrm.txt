@@ -1,0 +1,101 @@
+# fhjdshfds j  dlsajdsa !
+
+IDENTIFICATION DIVISION.
+
+
+
+
+PROGRAM-ID.Nompro.        
+DATA DIVISION.
+WORKING-STORAGE SECTION.
+
+
+CONST E INTEGER.
+
+A INTEGER.
+T FLOAT.
+H CHAR.
+S STRING.
+C INTEGER.
+
+CONST K = 123 .
+CONST B FLOAT. 
+CONST Ar =1.
+Sb | Fb STRING.
+
+Tab | W LINE 1 , SIZE 8 INTEGER .
+
+
+
+PROCEDURE DIVISION.
+
+#les expressions arithmetiques !
+H='h'.
+A=5.
+C= 5.
+A=A*C+3.
+
+
+#******************************************!
+#expression in out simple !
+
+DISPLAY ("Bonjour").
+DISPLAY ("cest un caractere $":C ).
+ACCEPT ("$":@ C).
+
+#******************************************!
+#if simple !
+
+IF ( NOT(A .L. 8)):
+	ACCEPT("#":@Sb).
+END.
+
+
+
+#if imbriqué !
+IF ((A.GE.5)):
+	ACCEPT ("#":@Fb).
+	ACCEPT ("$":@C ).
+	IF ((A.GE.C)):
+		ACCEPT ("#":@Fb).
+		ACCEPT ("&":@H ).
+		ACCEPT ("&":@H).
+	END.
+	ACCEPT ("#":@Sb ).
+END.
+
+
+#if avaec plusieurs condition  !
+IF ( (A .GE.(3 - 1)) AND (V .L. 8) OR NOT (V .L. 8) ):
+	ACCEPT ("$":@ C ).
+ELSE :
+	ACCEPT ("$":@ C ).
+END.
+
+#*****************************!
+
+# boucle simple !
+MOVE 3 TO 5
+DISPLAY ("c’est un entire % & #":T,H,Fb).
+END.
+
+
+# une boucle vide !
+MOVE 3 TO 5
+END.
+
+MOVE A TO 4
+	ACCEPT ("#":@Fb).
+	MOVE A TO 5
+		ACCEPT ("#":@ Sb).
+	END.
+END.
+
+#!
+#test!
+# test test !
+#fhjdshfds
+fhdskjfd 
+dlsajdsa !
+#Ceci est un deuxieme ! commentaire !
+STOP RUN .

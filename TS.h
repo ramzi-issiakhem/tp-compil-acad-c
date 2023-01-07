@@ -14,15 +14,58 @@ typedef struct Element
         struct Element *svt;
         } Pile;
 
+typedef struct qdr{
+
+    char oper[100]; 
+    char op1[100];   
+    char op2[100];   
+    char res[100];  
+    
+  } qdr;
+
+qdr quad[1000];
+
 Pile* pileidf;
 Pile* pilemc ;
 Pile* pilesep ;
+
 char val_array[50][50],val_cal[50][50];
 int q=0,b=0,typeidf=0,r=0,cst = 0;
 char valstatic[20];
 char valstr[20];
 char valstatic_res[20];
 char valstatic_msg[20];
+
+
+extern int qc;
+void quadr(char opr[],char op1[],char op2[],char res[])
+{
+	strcpy(quad[qc].oper,opr);
+	strcpy(quad[qc].op1,op1);
+	strcpy(quad[qc].op2,op2);
+	strcpy(quad[qc].res,res);
+	qc++;
+
+	priseChargeQuad();
+}
+
+void priseChargeQuad() {
+	
+}
+
+void ajour_quad(int num_quad, int colon_quad, char val [])
+{
+		if (colon_quad==0) {
+			strcpy(quad[num_quad].oper,val);
+		} else if (colon_quad==1) {
+		    strcpy(quad[num_quad].op1,val); 
+		 } else if (colon_quad==2) {
+			strcpy(quad[num_quad].op2,val);
+		 } else if (colon_quad==3) {
+			strcpy(quad[num_quad].res,val);
+		 }
+}
+
 
 
 /* Inisialiser la pile */
@@ -41,20 +84,21 @@ if(s==NULL)return 1;else return 0;
 
 
 /* empiler (ajouter) un élément dans la pile */
-void empiler(Pile **s, int x ,char entite[], char code[], char type[],int cst, float val, char valstr[])
+void empiler(Pile **l, int x ,char entite[], char code[], char type[],int cst, float val, char valstr[])
 {
-		Pile *p;
-		initpile(&p);
-		p=(Pile*)malloc(sizeof(Pile));
-		p->state=x;
-		p->cst=cst;
-		strcpy(p->name,entite);
-		strcpy(p->code,code);
-		strcpy(p->type,type);
-		strcpy(p->valstr,valstr);
-		p->val=val;
-		p->svt=*s;
-		*s=p;
+		Pile *z;
+		initpile(&z);
+		z=(Pile*)malloc(sizeof(Pile));
+		
+		z->state=x;
+		z->cst=cst;
+		strcpy(z->name,entite);
+		strcpy(z->code,code);
+		strcpy(z->type,type);
+		strcpy(z->valstr,valstr);
+		z->val=val;
+		z->svt=*l;
+		*l=z;
 }
 
 
@@ -77,19 +121,31 @@ void affichage(Pile *s)
      while(!pile_vide(s)){
 
 		if(s->state==1) {
-
-			if(strcmp(s->type,"FLOAT")==0 && (strcmp(s->code,"CONST")!=0)){
-				printf("| %d      | %15s   | %17s   | %13s    | %f \n",s->state,s->name,s->code,s->type,s->val);
-			}
-			if(strcmp(s->type,"INTEGER")==0 && (strcmp(s->code,"CONST")!=0)){
-						valeurint=(int)s->val;
-						printf("| %d      | %15s   | %17s   | %13s    | %d\n",s->state,s->name,s->code,s->type,valeurint);
-			}
-			if(strcmp(s->code,"IDF")==0)
+			if(strcmp(s->code,"IDF")==0  && strcmp(s->type,"CHAR") == 0)
 			{
 				printf("| %d      | %15s   | %17s   | %13s    | %s\n",s->state,s->name,s->code,s->type,s->valstr);
 			}
-			if((strcmp(s->code,"CONST")==0)){
+			if(strcmp(s->code,"IDF")==0 && strcmp(s->type,"BOOLEAN") == 0)
+			{
+				printf("| %d      | %15s   | %17s   | %13s    | %f\n",s->state,s->name,s->code,s->type,s->val);
+			}
+			if(strcmp(s->code,"IDF")==0 && strcmp(s->type,"BOOLEAN") != 0 && strcmp(s->type,"CHAR") != 0)
+			{
+				printf("| %d      | %15s   | %17s   | %13s    | %f\n",s->state,s->name,s->code,s->type,s->val);
+			}
+
+
+			if(strcmp(s->type,"FLOAT")==0 && (strcmp(s->code,"CONST")==0)){
+				printf("| %d      | %15s   | %17s   | %13s    | %f \n",s->state,s->name,s->code,s->type,s->val);
+			}
+			if(strcmp(s->type,"INTEGER")==0 && (strcmp(s->code,"CONST")==0) != 0) {
+						valeurint=(int)s->val;
+						printf("| %d      | %15s   | %17s   | %13s    | %d\n",s->state,s->name,s->code,s->type,valeurint);
+			}
+			
+			
+			
+			if((strcmp(s->code,"CONST")==0) && strcmp(s->type,"INTEGER")!=0 && strcmp(s->type,"FLOAT")!=0){
 				printf("| %d      | %15s   | %17s   | %13s    | %s\n",s->state,s->name,s->code,s->type,s->name);
 			}
 			if((strcmp(s->code,"mot cle")==0) || (strcmp(s->code,"sep")==0))
@@ -113,7 +169,8 @@ while(!pile_vide(p)){
 
 /*initialisation de l'état des cases des tables des symbloles
 0: libre
-1:occupée*/
+1:occupée
+*/
 
 void initialisation()
 { 
@@ -126,12 +183,12 @@ void initialisation()
 		empiler(&p,0,pileidf->name,pileidf->code,pileidf->type,pileidf->cst,pileidf->val,pileidf->valstr);
 		depiler(&pileidf);
 	 }
+
 	 while(!pile_vide(p)){
 		empiler(&pileidf,p->state,p->name,p->code,p->type,p->cst,p->val,p->valstr);
 		depiler(&p);
 	 }
-  }else
-  {
+  }  else  {
 	  initpile(&pileidf);
   }
 
@@ -145,9 +202,7 @@ void initialisation()
 		empiler(&pilemc,p->state,p->name,p->code,p->type,p->cst,p->val,p->valstr);
 		depiler(&p);
 	 }
-  }
-  else
-  {
+  } else {
 	  initpile(&pilemc);
   }
  
@@ -205,50 +260,55 @@ switch(y)
   {
    case 0:/*verifier si la case dans la tables des IDF et CONST est libre*/
         
-		
         if(!pile_vide(pileidf))
 		{ 
-		while (!pile_vide(pileidf) && trouv == false && utiliser == false)
-		{
-			if(strcmp(entite,pileidf->name)!=0){
-                
-				empiler(&p,pileidf->state,pileidf->name,pileidf->code,pileidf->type,pileidf->cst,pileidf->val,pileidf->valstr);
-				depiler(&pileidf);	
-			}else{
-				if(pileidf->state == 0){
-				trouv = true;
-				depiler(&pileidf);
-				}
-				else{
-					utiliser = true;
-				}
-			}
-		}
-        if(trouv == true)
-		{	
-          
+				while (!pile_vide(pileidf) && trouv == false && utiliser == false)
+				{
+					if (strcmp(entite,pileidf->name)!=0) {
+						empiler(&p,pileidf->state,pileidf->name,pileidf->code,pileidf->type,pileidf->cst,pileidf->val,pileidf->valstr);
+						depiler(&pileidf);	
+					} else{
 
-          inserer(entite,code,type,0,val,valstr,0);
-		  while(!pile_vide(p)){
-			empiler(&pileidf,p->state,p->name,p->code,p->type,p->cst,p->val,p->valstr);
-			depiler(&p);
-		  }
-		}
-		if(pile_vide(pileidf) && utiliser == false)
-		{	
-          inserer(entite,code,type,0,val,valstr,0);
-		  while(!pile_vide(p)){
-			empiler(&pileidf,p->state,p->name,p->code,p->type,p->cst,p->val,p->valstr);
-			depiler(&p);
-		  }
-		}
-        else{
-		  while(!pile_vide(p)){
-			empiler(&pileidf,p->state,p->name,p->code,p->type,p->cst,p->val,p->valstr);
-			depiler(&p);
-		  }
-		}
+						if(pileidf->state == 0){
+							trouv = true;
+							depiler(&pileidf);
+						}
+						else{
+					
+
+							utiliser = true;
+						}
+					}
+				}
+
+				if(trouv == true)
+				{		
+					
+
+						inserer(entite,code,type,0,val,valstr,0);
+						while(!pile_vide(p)){
+							empiler(&pileidf,p->state,p->name,p->code,p->type,p->cst,p->val,p->valstr);
+							depiler(&p);
+						}
+				}
+
+				if(pile_vide(pileidf) && utiliser == false)
+				{	
+					
+					inserer(entite,code,type,0,val,valstr,0);
+					while(!pile_vide(p)){
+						empiler(&pileidf,p->state,p->name,p->code,p->type,p->cst,p->val,p->valstr);
+						depiler(&p);
+					}
+				} else{
+					while(!pile_vide(p)){
+						empiler(&pileidf,p->state,p->name,p->code,p->type,p->cst,p->val,p->valstr);
+						depiler(&p);
+					}
+				}
 		}else{
+					
+			
 			inserer(entite,code,type,0,val,valstr,0);
 		}
         break;
@@ -325,7 +385,6 @@ switch(y)
 
 
 /***************** Récuperer une partie du Strig ( Utilisé pour les Valeurs Signés)*/
-
 char *getIntFromSigned(char *variable,int size,int value) {
     
     size_t len = size - value + 1;
@@ -348,9 +407,10 @@ char *getIntFromSigned(char *variable,int size,int value) {
     return arr;
 }
 
+
+
+
 /****************affichage*******************/
-
-
 void afficher()
 {
 printf("\n\n\n");
@@ -381,3 +441,187 @@ if(!pile_vide(pilesep)){
 }
 printf("--------------------------------------------------------------------------------------------------\n");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**************************chercher si idf est deja declarer et l'ajouter *********************/
+int declarationidf (char entite[],char type[],int cst,char valentier[], char valstring[])	
+{
+	
+	Pile *p; initpile(&p);
+	Pile *s; initpile(&s);
+	int x=0;
+	bool trouv = false; 
+	char value[20];
+		
+	if (!pile_vide(pileidf))
+		{ 
+		while (!pile_vide(pileidf) && trouv == false )
+		{
+			if(strcmp(entite,pileidf->name)  !=0){
+
+				empiler(&p,pileidf->state,pileidf->name,pileidf->code,pileidf->type,pileidf->cst,pileidf->val,pileidf->valstr);
+				depiler(&pileidf);	
+
+			} else {
+
+				empiler(&s,pileidf->state,pileidf->name,pileidf->code,pileidf->type,pileidf->cst,pileidf->val,pileidf->valstr);
+				depiler(&pileidf);
+
+
+				if(strcmp("-",s->type) != 0 ) {
+					x=1;
+					trouv = true;
+				} else{
+					empiler(&p,1,entite,s->code,type,cst,atof(valentier),valstring);
+
+				}
+			}
+		}
+		
+
+		while(!pile_vide(p)){
+			empiler(&pileidf,p->state,p->name,p->code,p->type,p->cst,p->val,p->valstr);
+			depiler(&p);
+		}
+		} 
+		return x;
+}
+
+
+
+
+
+/**************************chercher et modifier le type des idf*********************/
+void inserertype (char entite[],char type[],char valentier[],char valstring[])	
+{
+	Pile *p; initpile(&p);
+	Pile *s; initpile(&s);
+	bool trouv = false; 
+
+	if(!pile_vide(pileidf))
+		{ 
+		while (!pile_vide(pileidf) && trouv == false)
+		{
+			if(strcmp(entite,pileidf->name)!=0){
+				empiler(&p,pileidf->state,pileidf->name,pileidf->code,pileidf->type,pileidf->cst,pileidf->val,pileidf->valstr);
+				depiler(&pileidf);	
+			}else{
+
+				
+				empiler(&s,pileidf->state,pileidf->name,pileidf->code,pileidf->type,pileidf->cst,pileidf->val,pileidf->valstr);
+				depiler(&pileidf);
+				
+				inserer(s->name,s->code,type,s->cst,valentier,valstring,0);
+				trouv = true;
+			}
+		}
+		
+		while(!pile_vide(p)){
+			empiler(&pileidf,p->state,p->name,p->code,p->type,p->cst,p->val,p->valstr);
+			depiler(&p);
+		}
+		} 
+}
+
+
+
+/**************************chercher si idf est deja declarer *********************/
+int idfused (char entite[])	
+{
+	Pile *p; initpile(&p);
+	Pile *s; initpile(&s);
+	int x=0;
+	bool trouv = false; 
+		
+	if(!pile_vide(pileidf))
+		{ 
+		while (!pile_vide(pileidf) && trouv == false)
+		{
+			if(strcmp(entite,pileidf->name)!=0){
+				empiler(&p,pileidf->state,pileidf->name,pileidf->code,pileidf->type,pileidf->cst,pileidf->val,pileidf->valstr);
+				depiler(&pileidf);
+			}else{
+				empiler(&s,pileidf->state,pileidf->name,pileidf->code,pileidf->type,pileidf->cst,pileidf->val,pileidf->valstr);
+				
+				if(strcmp("-",s->type)!=0){
+					getvalue(&s);
+					if((strcmp("0.000000",valstatic)==0) && (strcmp("",s->valstr)==0))
+					{
+						x=1;
+					} else {
+						x=2;
+					};
+				}
+				trouv = true;
+			}
+		}
+		
+		while(!pile_vide(p)) {
+			empiler(&pileidf,p->state,p->name,p->code,p->type,p->cst,p->val,p->valstr);
+			depiler(&p);
+		}
+		} 
+		return x;
+}
+
+
+/**************************retourner la valeur de l'entite*********************/
+void getvalue(Pile **s)
+{
+	float x;
+	 x = (*s)->val;
+	sprintf(valstatic, "%f", x);
+}
+
+
+
+
+
+void getValueIDF(char entite[],float **val)
+{
+	Pile *s; initpile(&s);
+	Pile *p; initpile(&p);
+	bool trouv = false; 
+	
+
+	if(!pile_vide(pileidf))
+		{ 
+			while (!pile_vide(pileidf) && trouv == false)
+			{
+				if(strcmp(entite,pileidf->name)==0){
+
+					empiler(&s,pileidf->state,pileidf->name,pileidf->code,pileidf->type,pileidf->cst,pileidf->val,pileidf->valstr);
+					*val = &(s->val);
+				}
+				empiler(&p,pileidf->state,pileidf->name,pileidf->code,pileidf->type,pileidf->cst,pileidf->val,pileidf->valstr);
+				depiler(&pileidf);
+			}
+
+			while (!pile_vide(p))
+			{
+				empiler(&pileidf,p->state,p->name,p->code,p->type,p->cst,p->val,p->valstr);
+				depiler(&p);
+			}
+			
+		} 
+
+}
+
+
+
+
+
