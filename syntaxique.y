@@ -1,5 +1,5 @@
 %{
-     #include <stddef.h>
+    #include <stddef.h>
 	#include <stdio.h>
 	#include <string.h>
 	#include <stdlib.h>
@@ -27,7 +27,6 @@
 	char type_declaration[20];
 	char list_idf[20][20];
 	char val_str[30];
-	int qc=0;
 
 	float *val_general = 0;
 	char result_final[30];
@@ -120,11 +119,11 @@ INDENTATION: espace espace espace espace 		 {current_indentation += 1;}
 
 
 DEC_CST: LIST_TYPES LIST_IDF affect CST {
-
+										sprintf(sauvstring_two,"%f",val);
 										if (strcmp(type_declaration,sauvtype) == 0) {
 												while(n != 0) {
 													n--;
-													quadr("=",sauvstring_two,"vide",list_idf[n]);
+													ajouterQuad("=",sauvstring_two,"",list_idf[n]);
 													x= declarationidf(list_idf[n],sauvtype,1,val_str,sauvstring);
 													if(x == 1) {printf(" \n Error : Double déclaration de l'IDF, ligne %d,col %d, entité: %s  \n",nb_ligne,nbr_col,list_idf[n]); exit (0);};
 												}
@@ -133,7 +132,7 @@ DEC_CST: LIST_TYPES LIST_IDF affect CST {
 												    if (strcmp(sauvtype,"INTEGER") == 0) {
 														while(n != 0) {
 														n--;
-														quadr("=",sauvstring_two,"vide",list_idf[n]);
+														ajouterQuad("=",sauvstring_two,"",list_idf[n]);
 														x= declarationidf(list_idf[n],sauvtype,1,val_str,sauvstring);
 														if(x == 1) {printf(" \n Error : Double déclaration de l'IDF, ligne %d,col %d, entité: %s  \n",nb_ligne,nbr_col,list_idf[n]); exit (0);};
 														}
@@ -144,7 +143,7 @@ DEC_CST: LIST_TYPES LIST_IDF affect CST {
 													if ((atof(val_str) == 1) || (atof(val_str) == 0)) {
 														while(n != 0) {
 															n--;
-															quadr("=",sauvstring_two,"vide",list_idf[n]);
+															//quadr("=",sauvstring_two,"vide",list_idf[n]);
 															x= declarationidf(list_idf[n],type_declaration,1,val_str,sauvstring);
 															if(x == 1) {printf(" \n Error : Double déclaration de l'IDF, ligne %d,col %d, entité: %s  \n",nb_ligne,nbr_col,list_idf[n]); exit (0);};
 														}
@@ -197,7 +196,7 @@ DEC_VAR:  LIST_TYPES LIST_IDF affect EXPR  	{
 										if (strcmp(type_declaration,sauvtype) == 0) {
 												while(n != 0) {
 													n--;
-													quadr("=",val_str,"vide",list_idf[n]);
+													//quadr("=",val_str,"vide",list_idf[n]);
 													x= declarationidf(list_idf[n],sauvtype,1,val_str,sauvstring);
 													if(x == 1) {printf(" \n Error : Double déclaration de l'IDF, ligne %d,col %d, entité: %s  \n",nb_ligne,nbr_col,list_idf[n]); exit (0);};
 												}
@@ -206,7 +205,7 @@ DEC_VAR:  LIST_TYPES LIST_IDF affect EXPR  	{
 													if ((atof(val_str) == 1) || (atof(val_str) == 0)) {
 														while(n != 0) {
 															n--;
-															quadr("=",val_str,"vide",list_idf[n]);
+															//quadr("=",val_str,"vide",list_idf[n]);
 															x= declarationidf(list_idf[n],type_declaration,1,val_str,sauvstring);
 															if(x == 1) {printf(" \n Error : Double déclaration de l'IDF, ligne %d,col %d, entité: %s  \n",nb_ligne,nbr_col,list_idf[n]); exit (0);};
 														}
@@ -327,7 +326,9 @@ int yyerror (char *s)
 int main () 
 {
 initialisation();
+initialisationQuad();
 yyparse();
 afficher();
+afficherQuad();
 }
 int yywrap() {}
