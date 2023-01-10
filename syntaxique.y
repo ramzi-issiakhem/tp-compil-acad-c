@@ -28,6 +28,9 @@
 	char list_idf[20][20];
 	char val_str[30];
 
+	char op_1[20];
+	char op_2[20];
+	
 	float *val_general = 0;
 	char result_final[30];
 %}
@@ -231,7 +234,11 @@ EXPR:   AFFECT_SIMPLE { strcpy(result_final,val_str);}
 AFFECT_SIMPLE: idf  {   strcpy(sauvidf,$1); x=idfused(sauvidf);
 						if(x == 0){printf(" \n Erreur: IDF non déclaré: Line %d ,Col %d Entité: %s  \n",nb_ligne, nbr_col,sauvidf); exit (0);};
 						if(x == 1){printf(" \n Erreur: IDF non initialisé: Line %d ,Col %d Entité: %s  \n",nb_ligne, nbr_col,sauvidf); exit (0);};
-						if(x == 2){val = getValueIDF(sauvidf,&val_general); sprintf(val_str,"%f",*val_general);strcpy(sauvtype,"FLOAT");};
+						if(x == 2){
+									 val = getValueIDF(sauvidf,&val_general);
+									 sprintf(val_str,"%f",*val_general);
+									 strcpy(sauvtype,"FLOAT");
+								  };
 					}
 			  | CST 
 

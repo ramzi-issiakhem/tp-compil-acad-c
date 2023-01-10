@@ -65,14 +65,43 @@ void ajouterQuad(char operateur[], char op_1[], char op_2[], char temp[]) {
 }
 
 
-void retirerQuad(int qc) {
-        
-        // Retirer QC
-}
+void updateQuad(int qc,int col,char *val) {
+        Quad *z;
+		initpileQuad(&z);
 
-void updateQuad(int qc) {
-        
-        // Retirer QC
+
+        while (!pile_videQuad(pilequad))
+		{
+			empilerQuad(&z,pilequad->qc,pilequad->operateur,pilequad->op_1,pilequad->op_2,pilequad->temp);
+			depilerQuad(&pilequad);
+
+			if (z->qc == qc) {
+				switch (col)
+				{
+				case 0:
+					strcpy(z->operateur,val);
+					break;
+				case 1:
+					strcpy(z->op_1,val);
+					break;
+				case 2:
+					strcpy(z->op_2,val);
+					break;
+
+				default:
+					strcpy(z->temp,val);
+					break;
+				}
+			}
+		}
+
+		while (!pile_videQuad(&z))
+		{
+			empilerQuad(&pilequad,z->qc,z->operateur,z->op_1,z->op_2,z->temp);
+			depilerQuad(&z);
+		}
+		
+		
 }
 
 /* empilerQuad (ajouter) un élément dans la pile */
@@ -112,7 +141,7 @@ void affichageQuad(Quad *s)
 
      while(!pile_videQuad(s)){
 		
-        printf("| %15s      | %15s   | %15s   | %15s    | %s\n",s->operateur,s->op_1,s->op_2,s->temp);
+        printf("| %5s      | %18s   | %21s   | %29s    | \n",s->operateur,s->op_1,s->op_2,s->temp);
         
 
 	   empilerQuad(&p,s->qc,s->operateur,s->op_1,s->op_2,s->temp);
@@ -133,7 +162,7 @@ void afficherQuad()
 printf("\n\n\n");
 printf("                              LISTE DES QUADRUPLÉS\n");
 printf("--------------------------------------------------------------------------------------------------\n");
-printf("| OPerateur  |          Opérande   |              Opérande   |           Resultat                |\n");
+printf("| Operateur  |       Opérande       |         Opérande        |         Resultat                 |\n");
 printf("--------------------------------------------------------------------------------------------------\n");
 if(!pile_videQuad(pilequad)){
 	affichageQuad (pilequad);
